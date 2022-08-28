@@ -20,7 +20,7 @@ npm i koa
 1. 自动重启服务
 安装nodemon 
 ```BASH
-npm i nodemon
+npm i nodemon -D
 ```
 编写package.json文件
 ```json
@@ -82,6 +82,7 @@ app.listen(APP_PORT, () => {
 	module.exports = router
    ```
    3. 改写main.js
+   
    ```js
     const Koa = require("koa")
     const { APP_PORT } = require('./config/config.default')
@@ -97,6 +98,7 @@ app.listen(APP_PORT, () => {
 1. 将http服务和app业务拆分
 
 	创建`src/app/index.js`
+
     ```js
     const Koa = require("koa")
 	const userRouter = require("../router/user.route")
@@ -105,6 +107,7 @@ app.listen(APP_PORT, () => {
 	module.exports = app
 	```
     改写main.js
+
     ```js
     const { APP_PORT } = require('./config/config.default')
     const app = require("./app")
@@ -113,29 +116,80 @@ app.listen(APP_PORT, () => {
     })
     ```
 
-2. 将路由和控制器拆分
+   2. 将路由和控制器拆分
 	路由：解析URL，分发给controller对应的方法
     控制器: 处理不同的业务
     改写`user.route.js`
-    ```js
-    const Router = require('koa-router')
-    const {register, login} = require("../controller/user.controller")
-    const router = new Router({ prefix: '/users' })
-    //  注册接口
-    router.post('/register',register)
-    router.post('/login',login)
 
-    module.exports = router
-    ```
-    创建`controller/userController`
     ```js
-    class UserController {
-    async register(ctx,next){
-       ctx.body = '用户注册成功'
+        const Router = require('koa-router')
+        const {register, login} = require("../controller/user.controller")
+        const router = new Router({ prefix: '/users' })
+        //  注册接口
+        router.post('/register',register)
+        router.post('/login',login)
+
+        module.exports = router
+        ```
+        创建`controller/userController`
+        ```js
+                class UserController {
+                async register(ctx,next){
+                   ctx.body = '用户注册成功'
+                }
+                async login(ctx,next){
+                     ctx.body = '登陆成功'
+                }
+                    }
+                 module.exports = new UserController()
+    	```
+
+
+六、解析body
+1. 安装koa-body
+```bash
+npm i koa-body
+```
+2. 注册中间件
+改写`app/index.js`
+
+    ```js
+    app.use(KoaBody())
+    app.use(userRouter.routes())
+    ```
+3. 解析请求的数据
+	改写usercontroller
+	```js
+    const { createUser } = require('../service/user.service')
+	class UserController {
+    async register(ctx, next) {
+        console.log(ctx.request.body)
+        // 1. 获取数据
+        console.log(ctx.request.body)
+        const user_name = ctx.request.body.user_name
+        const password = ctx.request.body.password
+        // 2. 操作数据库
+        const res = await createUser(user_name, password)
+        console.log(res)
+        // 3. 返回结果
+        ctx.body = ctx.request.body
     }
-    async login(ctx,next){
+    async login(ctx, next) {
         ctx.body = '登陆成功'
     }
 }
 module.exports = new UserController()
     ```
+
+4. 拆分service层
+创建`src/service/user.service.js`
+
+```js
+class UserService {
+    async createUser(user_name, password){
+        // todo:写入数据库
+        return "写入数据库成功"
+    }
+}
+module.exports = new UserService()
+```
