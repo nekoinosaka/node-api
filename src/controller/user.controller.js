@@ -1,6 +1,7 @@
+const jwt = require('jsonwebtoken')
 const { userRegisterError } = require('../constant/error.type')
 const { createUser, getUserInfo } = require('../service/user.service')
-
+const {JWT_SECRET} = require('../config/config.default')
 class UserController {
     async register(ctx, next) {
         console.log(ctx.request.body)
@@ -29,7 +30,24 @@ class UserController {
 
     }
     async login(ctx, next) {
-        ctx.body = '登陆成功'
+        const {user_name}  = ctx.request.body
+        ctx.body = `欢迎,${user_name}`
+        // 1. 获取用户信息（在token的payload中要记录id,user_name,isAdmin）
+        try{
+            // 剔除从返回结果对象中password，
+            // 将剩下的属性放到一个新的对象res
+            const {password, ...res} = await getUserInfo({user_name})
+            ctx.body = {
+                code:0,
+                message:"登陆成功",
+                result:{
+                    token:jwt.sign(res,JWT_SECRET,{expiresIn:"1d"})
+                }
+            }
+        }catch(err){
+            console.error("用户登录失败",err)
+        }
+
     }
 }
 module.exports = new UserController()

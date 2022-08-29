@@ -223,3 +223,14 @@ seq.authenticate().then(()=>{
 })
 module.exports = seq
  ```
+ 12. 加密
+ 1. 安装bcryptjs
+ `npm i bcryptjs`
+ 
+ 14.用户认证与授权
+ 登陆成功后给用户颁发令牌（token）
+ 用户在以后的每一次请求中携带这个令牌
+ 使用jwt (json web token)
+ header:头部
+ payload:载荷
+ signature:保证安全性和有效性
