@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken')
 const { userRegisterError } = require('../constant/error.type')
-const { createUser, getUserInfo } = require('../service/user.service')
+const { createUser, getUserInfo,updateById } = require('../service/user.service')
 const {JWT_SECRET} = require('../config/config.default')
 class UserController {
     async register(ctx, next) {
@@ -49,5 +49,25 @@ class UserController {
         }
 
     }
+    async changePassword(ctx,next){
+        const id = ctx.state.user.id
+        const password = ctx.request.body.password
+        // console.log(id,password)
+       if( await updateById({id,password})){
+        ctx.body={
+            code:0,
+            messsage:"修改密码成功",
+            result:""
+        }
+       }
+       else{
+        ctx.body={
+            code:"10007",
+            message:"修改密码失败",
+            result:""
+        }
+       }
+    }
+    
 }
 module.exports = new UserController()

@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken")
-const { tokenExpiredError,invalidToken } = require('../constant/error.type')
-const {JWT_SECRET} = require('../config/config.default')
+const { tokenExpiredError, invalidToken } = require('../constant/error.type')
+const { JWT_SECRET } = require('../config/config.default')
 const auth = async (ctx, next) => {
     const { authorization } = ctx.request.header
     const token = authorization.replace("Bearer ", "")
@@ -9,7 +9,7 @@ const auth = async (ctx, next) => {
         const user = jwt.verify(token, JWT_SECRET)
         ctx.state.user = user
     } catch (err) {
-        
+
         switch (err.name) {
             case "TokenExpiredError":
                 console.error("token过期", err)
@@ -17,7 +17,7 @@ const auth = async (ctx, next) => {
             case "JsonWebTokenError":
                 console.error("无效的token", err)
                 return ctx.app.emit("error", invalidToken, ctx)
-            }
+        }
     }
     await next()
 }
