@@ -29,4 +29,14 @@ module.exports = {
         message:"无效的密码",
         result:""
     },
+    tokenExpiredError:{
+        code:"10101",
+        message:"token过期",
+        result:""
+    },
+    invalidToken:{
+        code:"10102",
+        message:"token无效",
+        result:""
+    }
 }

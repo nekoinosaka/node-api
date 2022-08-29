@@ -41,7 +41,7 @@ class UserController {
                 code:0,
                 message:"登陆成功",
                 result:{
-                    token:jwt.sign(res,JWT_SECRET,{expiresIn:"1d"})
+                    token:jwt.sign(res,JWT_SECRET,{expiresIn:'10'})
                 }
             }
         }catch(err){
