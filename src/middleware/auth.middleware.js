@@ -9,7 +9,7 @@ const auth = async (ctx, next) => {
         const user = jwt.verify(token, JWT_SECRET)
         ctx.state.user = user
     } catch (err) {
-        console.log(err.name,"err.name")
+        
         switch (err.name) {
             case "TokenExpiredError":
                 console.error("token过期", err)

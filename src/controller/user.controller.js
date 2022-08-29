@@ -31,7 +31,7 @@ class UserController {
     }
     async login(ctx, next) {
         const {user_name}  = ctx.request.body
-        ctx.body = `欢迎,${user_name}`
+         
         // 1. 获取用户信息（在token的payload中要记录id,user_name,isAdmin）
         try{
             // 剔除从返回结果对象中password，
@@ -41,8 +41,8 @@ class UserController {
                 code:0,
                 message:"登陆成功",
                 result:{
-                    token:jwt.sign(res,JWT_SECRET,{expiresIn:'10'})
-                }
+                    token:jwt.sign(res,JWT_SECRET,{expiresIn:'1d'})
+                },
             }
         }catch(err){
             console.error("用户登录失败",err)
