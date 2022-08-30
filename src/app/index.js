@@ -1,6 +1,6 @@
 const path = require('path')
 const Koa = require("koa")
-
+const parameter = require("koa-parameter")
 const cors = require('koa2-cors')
 const KoaBody = require('koa-body')
 const KoaStatic = require("koa-static")
@@ -15,6 +15,7 @@ app.use(KoaBody({
         keepExtensions:true
     }
 }))
+app.use(parameter(app))
 app.use(KoaStatic(path.join(__dirname,'../upload')))
 app.use(cors())
 app.use(router.routes())
