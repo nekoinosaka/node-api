@@ -38,5 +38,10 @@ module.exports = {
         code:"10102",
         message:"token无效",
         result:""
+    },
+    noPermissionError:{
+        code:"10103",
+        message:"无管理员权限",
+        result:""
     }
 }
